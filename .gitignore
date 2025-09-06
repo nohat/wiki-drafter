@@ -73,3 +73,8 @@ learn/feedback.log.jsonl
 # Wiki-Drafter specific
 rsp_cache.json
 sources.json
+
+# VS Code extension (nested) build artifacts
+extensions/vscode/out/
+extensions/vscode/coverage/
+extensions/vscode/*.vsix

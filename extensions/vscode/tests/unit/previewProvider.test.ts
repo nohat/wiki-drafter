@@ -2,131 +2,131 @@
  * Unit tests for PreviewProvider
  */
 
-import { PreviewProvider } from '../../src/webviews/preview/previewProvider';
-import * as vscode from 'vscode';
-import axios from 'axios';
+import { PreviewProvider } from "../../src/webviews/preview/previewProvider";
+import type * as vscode from "vscode";
+import axios from "axios";
 
 // Mock axios
-jest.mock('axios');
+jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe('PreviewProvider', () => {
+describe("PreviewProvider", () => {
   let previewProvider: PreviewProvider;
   let mockExtensionUri: vscode.Uri;
   let mockWebviewView: any;
   let mockDocument: any;
 
   beforeEach(() => {
-    mockExtensionUri = { fsPath: '/test/path' } as vscode.Uri;
+    mockExtensionUri = { fsPath: "/test/path" } as vscode.Uri;
     previewProvider = new PreviewProvider(mockExtensionUri);
-    
+
     mockWebviewView = {
       webview: {
         options: {},
-        html: '',
+        html: "",
         postMessage: jest.fn(),
         asWebviewUri: jest.fn(),
-        onDidReceiveMessage: jest.fn()
-      }
+        onDidReceiveMessage: jest.fn(),
+      },
     };
 
     mockDocument = {
       getText: jest.fn(() => "'''Test''' article with [[links]]"),
-      languageId: 'wikitext',
-      fileName: 'test.wiki'
+      languageId: "wikitext",
+      fileName: "test.wiki",
     };
 
     // Reset mocks
     jest.clearAllMocks();
   });
 
-  describe('resolveWebviewView', () => {
-    it('should initialize webview with correct HTML', () => {
+  describe("resolveWebviewView", () => {
+    it("should initialize webview with correct HTML", () => {
       previewProvider.resolveWebviewView(mockWebviewView, { state: undefined }, {} as any);
 
       expect(mockWebviewView.webview.options).toEqual({
         enableScripts: true,
-        localResourceRoots: [mockExtensionUri]
+        localResourceRoots: [mockExtensionUri],
       });
-      expect(mockWebviewView.webview.html).toContain('Loading preview...');
+      expect(mockWebviewView.webview.html).toContain("Loading preview...");
     });
 
-    it('should set up message handler', () => {
+    it("should set up message handler", () => {
       previewProvider.resolveWebviewView(mockWebviewView, { state: undefined }, {} as any);
-      
+
       expect(mockWebviewView.webview.onDidReceiveMessage).toHaveBeenCalled();
     });
   });
 
-  describe('updatePreview', () => {
+  describe("updatePreview", () => {
     beforeEach(() => {
       previewProvider.resolveWebviewView(mockWebviewView, { state: undefined }, {} as any);
     });
 
-    it('should render preview with companion service', async () => {
+    it("should render preview with companion service", async () => {
       const mockResponse = {
         data: {
-          html: '<p><strong>Test</strong> article</p>',
-          dsr_map: {}
-        }
+          html: "<p><strong>Test</strong> article</p>",
+          dsr_map: {},
+        },
       };
       mockedAxios.post.mockResolvedValueOnce(mockResponse);
 
       previewProvider.updatePreview(mockDocument);
 
       // Wait for debounced update
-      await new Promise(resolve => setTimeout(resolve, 250));
+      await new Promise((resolve) => setTimeout(resolve, 250));
 
       expect(mockedAxios.post).toHaveBeenCalledWith(
-        'http://localhost:8000/render',
+        "http://localhost:8000/render",
         {
           wikitext: "'''Test''' article with [[links]]",
-          section: undefined
+          section: undefined,
         },
-        { timeout: 5000 }
+        { timeout: 5000 },
       );
     });
 
-    it('should fallback to basic HTML when service fails', async () => {
-      mockedAxios.post.mockRejectedValueOnce(new Error('Service unavailable'));
+    it("should fallback to basic HTML when service fails", async () => {
+      mockedAxios.post.mockRejectedValueOnce(new Error("Service unavailable"));
 
       previewProvider.updatePreview(mockDocument);
 
       // Wait for debounced update
-      await new Promise(resolve => setTimeout(resolve, 250));
+      await new Promise((resolve) => setTimeout(resolve, 250));
 
       expect(mockWebviewView.webview.postMessage).toHaveBeenCalledWith({
-        type: 'updatePreview',
-        html: expect.stringContaining('<strong>Test</strong>'),
-        dsrMap: null
+        type: "updatePreview",
+        html: expect.stringContaining("<strong>Test</strong>"),
+        dsrMap: null,
       });
     });
   });
 
-  describe('_getBasicHtmlPreview', () => {
-    it('should convert basic wikitext to HTML', () => {
+  describe("_getBasicHtmlPreview", () => {
+    it("should convert basic wikitext to HTML", () => {
       const provider = previewProvider as any;
       const result = provider._getBasicHtmlPreview("'''Bold''' and ''italic''");
-      
-      expect(result).toContain('<strong>Bold</strong>');
-      expect(result).toContain('<em>italic</em>');
+
+      expect(result).toContain("<strong>Bold</strong>");
+      expect(result).toContain("<em>italic</em>");
       expect(result).toContain('class="wiki-content"');
     });
 
-    it('should handle wikilinks', () => {
+    it("should handle wikilinks", () => {
       const provider = previewProvider as any;
       const result = provider._getBasicHtmlPreview("[[Article|Display text]]");
-      
+
       expect(result).toContain('class="wikilink"');
-      expect(result).toContain('Display text');
+      expect(result).toContain("Display text");
     });
 
-    it('should handle references', () => {
+    it("should handle references", () => {
       const provider = previewProvider as any;
       const result = provider._getBasicHtmlPreview('<ref name="test">Citation</ref>');
-      
+
       expect(result).toContain('class="reference"');
-      expect(result).toContain('[test]');
+      expect(result).toContain("[test]");
     });
   });
 });

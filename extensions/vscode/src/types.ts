@@ -1,13 +1,13 @@
 export interface WikiDraftConfig {
-  cite_style: 'named-refs' | 'footnotes';
+  cite_style: "named-refs" | "footnotes";
   as_of_year_threshold: number;
   llm: {
-    provider: 'ollama' | 'openai' | 'anthropic';
+    provider: "ollama" | "openai" | "anthropic";
     model: string;
     temperature: number;
   };
   wikimedia_auth: {
-    method: 'botpassword' | 'oauth';
+    method: "botpassword" | "oauth";
     username: string;
     password: string;
   };
@@ -32,11 +32,11 @@ export interface Claim {
   start: number;
   end: number;
   text: string;
-  type: 'statistic' | 'BLP' | 'quote' | 'contentious' | 'general';
-  risk: 'low' | 'medium' | 'high';
+  type: "statistic" | "BLP" | "quote" | "contentious" | "general";
+  risk: "low" | "medium" | "high";
   requires_inline: boolean;
   existing_refs: string[];
-  status: 'unsupported' | 'supported' | 'pending';
+  status: "unsupported" | "supported" | "pending";
   sources: string[];
   source_quality?: number;
   as_of?: string;
@@ -63,7 +63,7 @@ export interface Source {
 }
 
 export interface RSPEntry {
-  label: 'generally reliable' | 'deprecated' | 'context-dependent' | 'blacklisted';
+  label: "generally reliable" | "deprecated" | "context-dependent" | "blacklisted";
   notes?: string;
 }
 
@@ -74,7 +74,7 @@ export interface FeedbackEntry {
   claim_id: string;
   suggestion_type: string;
   ai_choice: any;
-  user_action: 'accept' | 'edit' | 'reject' | 'defer';
+  user_action: "accept" | "edit" | "reject" | "defer";
   reason: string;
   notes?: string;
 }
@@ -94,7 +94,7 @@ export interface CitoidResponse {
 export interface ArchiveResponse {
   archive_url: string;
   archive_date: string;
-  status: 'success' | 'failed' | 'pending';
+  status: "success" | "failed" | "pending";
 }
 
 export interface CopyVioResponse {

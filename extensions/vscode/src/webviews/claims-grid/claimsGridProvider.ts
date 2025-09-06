@@ -38,22 +38,40 @@ export class ClaimsGridProvider implements vscode.WebviewViewProvider {
         case "filterChanged":
           this._handleFilterChange(data.filter);
           break;
-        case "ready":
-          this._sendClaimsToWebview();
+        case "ready": {
+          // If we already have a document context, send claims immediately.
+          if (this._currentDocument) {
+            this._sendClaimsToWebview();
+            break;
+          }
+          // Otherwise try to initialize from the active editor so the grid
+          // isn't empty on first open.
+          const activeEditor = vscode.window.activeTextEditor;
+          if (activeEditor && activeEditor.document.languageId === "wikitext") {
+            this.updateClaims(activeEditor.document);
+          } else {
+            this._sendClaimsToWebview();
+          }
           break;
+        }
       }
     });
   }
 
   public updateClaims(document: vscode.TextDocument) {
+    console.log("ClaimsGridProvider: updateClaims called for document:", document.uri.fsPath);
     this._currentDocument = document;
     this._currentRev++;
 
     // Load existing claims file or extract new claims
     this._loadOrExtractClaims(document);
 
+    console.log("ClaimsGridProvider: Claims extracted/loaded, count:", this._claims.length);
     if (this._view) {
+      console.log("ClaimsGridProvider: Sending claims to webview");
       this._sendClaimsToWebview();
+    } else {
+      console.log("ClaimsGridProvider: No webview available to send claims to");
     }
   }
 
@@ -100,9 +118,12 @@ export class ClaimsGridProvider implements vscode.WebviewViewProvider {
   }
 
   private async _extractClaims(document: vscode.TextDocument) {
+    console.log("ClaimsGridProvider: Extracting claims from document");
     // Basic claim extraction - in real implementation this would use LLM
     const text = document.getText();
+    console.log("ClaimsGridProvider: Document text length:", text.length);
     const sentences = this._extractSentences(text);
+    console.log("ClaimsGridProvider: Extracted sentences count:", sentences.length);
 
     this._claims = sentences.map((sentence, index) => ({
       id: `c_${index + 1}`,
@@ -118,6 +139,7 @@ export class ClaimsGridProvider implements vscode.WebviewViewProvider {
       sources: [],
     }));
 
+    console.log("ClaimsGridProvider: Created claims count:", this._claims.length);
     // Save claims to file
     await this._saveClaimsFile(document.uri);
   }
@@ -257,6 +279,10 @@ export class ClaimsGridProvider implements vscode.WebviewViewProvider {
 
   private _sendClaimsToWebview() {
     if (this._view) {
+      console.log(
+        "ClaimsGridProvider: Posting message to webview with claims count:",
+        this._claims.length,
+      );
       this._view.webview.postMessage({
         type: "updateClaims",
         claims: this._claims,

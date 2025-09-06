@@ -12,7 +12,9 @@ const defaultMock = {
     showErrorMessage: jest.fn(),
     activeTextEditor: undefined,
     onDidChangeActiveTextEditor: jest.fn(),
-    createWebviewPanel: jest.fn(() => ({ webview: { html: '', onDidReceiveMessage: jest.fn(), postMessage: jest.fn() } })),
+    createWebviewPanel: jest.fn(() => ({
+      webview: { html: "", onDidReceiveMessage: jest.fn(), postMessage: jest.fn() },
+    })),
   },
   workspace: {
     getConfiguration: jest.fn(() => ({ get: jest.fn() })),
@@ -20,7 +22,7 @@ const defaultMock = {
   },
   Uri: {
     file: jest.fn((p) => ({ fsPath: p })),
-    joinPath: jest.fn((...parts) => ({ fsPath: parts.join('/') })),
+    joinPath: jest.fn((...parts) => ({ fsPath: parts.join("/") })),
   },
   ViewColumn: { One: 1, Two: 2, Three: 3 },
   TextEditorRevealType: { InCenter: 1 },
@@ -30,4 +32,4 @@ const defaultMock = {
   WebviewViewProvider: class {},
 };
 
-module.exports = (global && global.vscode) ? global.vscode : defaultMock;
+module.exports = global && global.vscode ? global.vscode : defaultMock;

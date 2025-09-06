@@ -1,238 +1,238 @@
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    color: var(--vscode-editor-foreground);
-    background-color: var(--vscode-editor-background);
-    margin: 0;
-    padding: 8px;
-    font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--vscode-editor-foreground);
+  background-color: var(--vscode-editor-background);
+  margin: 0;
+  padding: 8px;
+  font-size: 13px;
 }
 
 .filters {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--vscode-panel-border);
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--vscode-panel-border);
 }
 
 .filters select {
-    background-color: var(--vscode-input-background);
-    color: var(--vscode-input-foreground);
-    border: 1px solid var(--vscode-input-border);
-    border-radius: 2px;
-    padding: 4px 8px;
-    font-size: 12px;
-    flex: 1;
+  background-color: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border);
+  border-radius: 2px;
+  padding: 4px 8px;
+  font-size: 12px;
+  flex: 1;
 }
 
 .filters select:focus {
-    outline: 1px solid var(--vscode-focusBorder);
-    outline-offset: -1px;
+  outline: 1px solid var(--vscode-focusBorder);
+  outline-offset: -1px;
 }
 
 #claims-container {
-    overflow: auto;
-    height: calc(100vh - 80px);
+  overflow: auto;
+  height: calc(100vh - 80px);
 }
 
 .no-claims {
-    text-align: center;
-    color: var(--vscode-descriptionForeground);
-    padding: 20px;
-    font-style: italic;
+  text-align: center;
+  color: var(--vscode-descriptionForeground);
+  padding: 20px;
+  font-style: italic;
 }
 
 .claims-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
 }
 
 .claims-table th {
-    background-color: var(--vscode-list-inactiveSelectionBackground);
-    color: var(--vscode-list-inactiveSelectionForeground);
-    border: 1px solid var(--vscode-panel-border);
-    padding: 6px 8px;
-    text-align: left;
-    font-weight: 600;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
+  background-color: var(--vscode-list-inactiveSelectionBackground);
+  color: var(--vscode-list-inactiveSelectionForeground);
+  border: 1px solid var(--vscode-panel-border);
+  padding: 6px 8px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .claims-table td {
-    border: 1px solid var(--vscode-panel-border);
-    padding: 8px;
-    vertical-align: top;
+  border: 1px solid var(--vscode-panel-border);
+  padding: 8px;
+  vertical-align: top;
 }
 
 .claim-row {
-    cursor: pointer;
-    transition: background-color 0.1s ease;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
 }
 
 .claim-row:hover {
-    background-color: var(--vscode-list-hoverBackground);
+  background-color: var(--vscode-list-hoverBackground);
 }
 
 .claim-row.selected {
-    background-color: var(--vscode-list-activeSelectionBackground);
-    color: var(--vscode-list-activeSelectionForeground);
+  background-color: var(--vscode-list-activeSelectionBackground);
+  color: var(--vscode-list-activeSelectionForeground);
 }
 
 /* Status pills */
 .status-pill {
-    display: inline-block;
-    padding: 2px 6px;
-    border-radius: 10px;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .status-unsupported {
-    background-color: var(--vscode-errorForeground);
-    color: white;
+  background-color: var(--vscode-errorForeground);
+  color: white;
 }
 
 .status-supported {
-    background-color: var(--vscode-terminal-ansiGreen);
-    color: white;
+  background-color: var(--vscode-terminal-ansiGreen);
+  color: white;
 }
 
 .status-pending {
-    background-color: var(--vscode-editorWarning-foreground);
-    color: black;
+  background-color: var(--vscode-editorWarning-foreground);
+  color: black;
 }
 
 /* Type badges */
 .type-badge {
-    display: inline-block;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .type-BLP {
-    background-color: #ff6b6b;
-    color: white;
+  background-color: #ff6b6b;
+  color: white;
 }
 
 .type-quote {
-    background-color: #4ecdc4;
-    color: white;
+  background-color: #4ecdc4;
+  color: white;
 }
 
 .type-statistic {
-    background-color: #45b7d1;
-    color: white;
+  background-color: #45b7d1;
+  color: white;
 }
 
 .type-contentious {
-    background-color: #f39c12;
-    color: white;
+  background-color: #f39c12;
+  color: white;
 }
 
 .type-general {
-    background-color: var(--vscode-button-secondaryBackground);
-    color: var(--vscode-button-secondaryForeground);
+  background-color: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
 }
 
 /* Risk indicators */
 .risk-indicator {
-    display: inline-block;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .risk-high {
-    background-color: var(--vscode-errorForeground);
-    color: white;
+  background-color: var(--vscode-errorForeground);
+  color: white;
 }
 
 .risk-medium {
-    background-color: var(--vscode-editorWarning-foreground);
-    color: black;
+  background-color: var(--vscode-editorWarning-foreground);
+  color: black;
 }
 
 .risk-low {
-    background-color: var(--vscode-terminal-ansiGreen);
-    color: white;
+  background-color: var(--vscode-terminal-ansiGreen);
+  color: white;
 }
 
 /* Claim text */
 .claim-text {
-    max-width: 300px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 1.4;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
 }
 
 .section {
-    color: var(--vscode-descriptionForeground);
-    font-style: italic;
-    max-width: 120px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  color: var(--vscode-descriptionForeground);
+  font-style: italic;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Sources */
 .sources {
-    text-align: center;
-    min-width: 80px;
+  text-align: center;
+  min-width: 80px;
 }
 
 .source-count {
-    display: block;
-    font-size: 11px;
-    color: var(--vscode-descriptionForeground);
-    margin-bottom: 2px;
+  display: block;
+  font-size: 11px;
+  color: var(--vscode-descriptionForeground);
+  margin-bottom: 2px;
 }
 
 .quality-score {
-    display: inline-block;
-    padding: 1px 4px;
-    border-radius: 2px;
-    font-size: 10px;
-    font-weight: 600;
-    background-color: var(--vscode-button-background);
-    color: var(--vscode-button-foreground);
+  display: inline-block;
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 600;
+  background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
 }
 
 .no-sources {
-    color: var(--vscode-errorForeground);
-    font-style: italic;
-    font-size: 11px;
+  color: var(--vscode-errorForeground);
+  font-style: italic;
+  font-size: 11px;
 }
 
 /* Scrollbar styles */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--vscode-scrollbarSlider-background);
+  background: var(--vscode-scrollbarSlider-background);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--vscode-scrollbarSlider-background);
-    border-radius: 4px;
+  background: var(--vscode-scrollbarSlider-background);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--vscode-scrollbarSlider-hoverBackground);
+  background: var(--vscode-scrollbarSlider-hoverBackground);
 }

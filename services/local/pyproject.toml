@@ -17,6 +17,13 @@ ignore = [
   # Add any rule codes to ignore here
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["F401", "I001", "E501"]
+"routers/score.py" = ["E501", "C901", "E722", "I001", "F401", "B904"]
+"routers/copyvio.py" = ["F401", "B904", "E501", "I001"]
+"routers/citoid.py" = ["F401", "E501", "E722", "B904", "C901", "I001"]
+"routers/archive.py" = ["I001", "F401", "E501"]
+
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
