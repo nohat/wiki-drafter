@@ -70,12 +70,16 @@
 - [ ] Documentation and examples
 
 ## 🔧 Technical Debt & Improvements
+- [ ] Set up VS Code extension best practices (CI/CD, GitHub Actions, marketplace)
+- [ ] Add comprehensive test coverage (Jest for extension, pytest for service)
+- [ ] Set up GitHub Actions for automated testing and building
+- [ ] Configure VS Code Marketplace publishing workflow
 - [ ] Add .vscodeignore for cleaner packaging
-- [ ] Fix extension packaging warnings (repository field, LICENSE)
-- [ ] Bundle extension for better performance
-- [ ] Add error handling and logging
+- [ ] Bundle extension for better performance (webpack)
+- [ ] Add error handling and logging throughout
 - [ ] Implement proper interval tree for claim offset management
-- [ ] Add comprehensive test coverage
+- [ ] Set up semantic versioning and automated releases
+- [ ] Add extension development documentation
 
 ## 🐛 Current Issues
 - **Preview not rendering**: Parsoid not configured, fallback renderer broken
