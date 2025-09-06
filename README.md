@@ -178,6 +178,103 @@ cd services/local
 python -m pytest tests/
 ```
 
+### Git Hooks: Gate Commits/Pushes on Tests
+
+This repository includes Git hooks in `.githooks/` that prevent commits and pushes unless tests pass for both subprojects:
+
+- `extensions/vscode/` (Node/Jest)
+- `services/local/` (Python/pytest)
+
+Hooks added:
+
+- `pre-commit` — runs Jest and pytest before you commit
+- `pre-push` — runs Jest and pytest before you push
+
+Enable the hooks:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Ensure dependencies are installed so tests can run:
+
+```bash
+# VS Code extension deps
+cd extensions/vscode && npm install
+
+# Python service deps (optionally use a venv)
+cd ../../services/local && pip install -r requirements.txt
+```
+
+Notes:
+
+- The hooks will automatically prefer `extensions/vscode/npm test` and `python -m pytest`.
+- If `services/local/venv/` exists, the hooks will use `venv/bin/python` automatically.
+- To temporarily bypass hooks (e.g., hotfix), use `--no-verify`:
+
+```bash
+git commit -m "hotfix" --no-verify
+git push --no-verify
+```
+
+Please re-run the full test suite soon after using `--no-verify`.
+
+## Linting and Type Checking
+
+We use industry-standard tooling across both subprojects.
+
+- Node (VS Code extension in `extensions/vscode/`)
+  - ESLint with `@typescript-eslint` and recommended rules
+  - Prettier for formatting
+  - TypeScript `tsc` for type-checking
+
+- Python (service in `services/local/`)
+  - Ruff for fast linting and import/order rules
+  - mypy for static type checking
+  - pytest for tests (configured via `pytest.ini`)
+
+### Developer Setup (once per machine)
+
+```bash
+# Node tools
+cd extensions/vscode
+npm install
+
+# Python tools
+cd ../../services/local
+python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
+```
+
+### Common Commands
+
+```bash
+# Node (from extensions/vscode)
+npm run lint        # ESLint
+npm run lint:fix    # ESLint with auto-fix
+npm run format      # Prettier write
+npm run format:check
+npm run typecheck   # tsc --noEmit
+npm test            # Jest
+
+# Python (from services/local)
+python -m ruff check .           # lint
+python -m mypy --config-file mypy.ini .  # type-check
+python -m pytest -q              # tests
+```
+
+### What Hooks Run
+
+- `pre-commit` (fast):
+  - Lints staged Node files with ESLint and formats with Prettier
+  - Lints staged Python files with Ruff
+  - Re-adds any auto-fixed files to your commit
+
+- `pre-push` (thorough):
+  - Node: ESLint (no warnings), Prettier check, TypeScript `tsc`, Jest tests
+  - Python: Ruff, mypy, pytest
+
+
 ## API Documentation
 
 The companion service provides these endpoints:

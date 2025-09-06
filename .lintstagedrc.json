@@ -1,0 +1,9 @@
+{
+  "extensions/vscode/**/*.{ts,tsx,js,jsx}": [
+    "bash -lc 'cd extensions/vscode && npx eslint --fix'",
+    "bash -lc 'cd extensions/vscode && npx prettier --write'"
+  ],
+  "extensions/vscode/**/*.{json,css,md}": [
+    "bash -lc 'cd extensions/vscode && npx prettier --write'"
+  ]
+}

@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+# Fast pre-commit checks: lint staged files (JS/TS with ESLint+Prettier; Python with Ruff)
+# Tests and type-checks are deferred to pre-push for speed.
+set -euo pipefail
+
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+YELLOW="\033[1;33m"
+RESET="\033[0m"
+
+fail() {
+  echo -e "${RED}pre-commit: $1${RESET}"
+  exit 1
+}
+
+info() {
+  echo -e "${YELLOW}$1${RESET}"
+}
+
+ok() {
+  echo -e "${GREEN}$1${RESET}"
+}
+
+PROJECT_ROOT_DIR="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+cd "$PROJECT_ROOT_DIR"
+
+# Collect staged files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
+if [ -z "${STAGED_FILES}" ]; then
+  info "No staged files to lint."
+  exit 0
+fi
+
+# Split into JS/TS and Python subsets
+JS_STAGED=()
+PY_STAGED=()
+while IFS= read -r file; do
+  case "$file" in
+    extensions/vscode/*)
+      case "$file" in
+        extensions/vscode/src/*.ts|extensions/vscode/src/*.tsx|extensions/vscode/src/**/*.ts|extensions/vscode/src/**/*.tsx|extensions/vscode/tests/*.ts|extensions/vscode/tests/*.tsx|extensions/vscode/tests/**/*.ts|extensions/vscode/tests/**/*.tsx)
+          JS_STAGED+=("$file")
+          ;;
+      esac
+      ;;
+    services/local/*)
+      case "$file" in
+        *.py)
+          PY_STAGED+=("$file")
+          ;;
+      esac
+      ;;
+  esac
+done <<<"$STAGED_FILES"
+
+# 1) Lint/format JS/TS (ESLint + Prettier) on staged files
+if [ ${#JS_STAGED[@]} -gt 0 ]; then
+  info "Linting/formatting staged JS/TS files (ESLint + Prettier) ..."
+  (
+    cd extensions/vscode
+    REL_FILES=()
+    for f in "${JS_STAGED[@]}"; do
+      REL_FILES+=("${f#extensions/vscode/}")
+    done
+    if command -v npx >/dev/null 2>&1; then
+      npx --yes eslint --max-warnings=0 --fix "${REL_FILES[@]}"
+      npx --yes prettier --write "${REL_FILES[@]}"
+    else
+      fail "npx not found to run ESLint/Prettier in extensions/vscode"
+    fi
+  )
+  # Re-add potentially fixed files
+  git add -- "${JS_STAGED[@]}"
+  ok "JS/TS linting passed."
+else
+  info "No JS/TS staged files to lint."
+fi
+
+# 2) Lint Python (Ruff) on staged files
+if [ ${#PY_STAGED[@]} -gt 0 ]; then
+  info "Linting staged Python files with Ruff ..."
+  (
+    cd services/local
+    REL_PY=()
+    for f in "${PY_STAGED[@]}"; do
+      REL_PY+=("${f#services/local/}")
+    done
+    PYTHON_BIN=""
+    if [ -x "venv/bin/python" ]; then
+      PYTHON_BIN="venv/bin/python"
+      "$PYTHON_BIN" -m ruff check --fix "${REL_PY[@]}" || fail "Ruff found issues (services/local)"
+    elif command -v ruff >/dev/null 2>&1; then
+      ruff check --fix "${REL_PY[@]}" || fail "Ruff found issues (services/local)"
+    elif command -v python3 >/dev/null 2>&1; then
+      python3 -m ruff check --fix "${REL_PY[@]}" || fail "Ruff found issues (services/local)"
+    else
+      fail "Neither ruff nor python3 available to run Ruff in services/local"
+    fi
+  )
+  # Re-add potentially fixed files
+  git add -- "${PY_STAGED[@]}"
+  ok "Python linting passed."
+else
+  info "No Python staged files to lint."
+fi
+
+ok "Pre-commit checks passed. Proceeding with commit."

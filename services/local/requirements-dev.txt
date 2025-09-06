@@ -1,0 +1,4 @@
+# Development tools for linting, type checking, and testing
+ruff==0.5.6
+mypy==1.11.2
+pytest==8.2.0

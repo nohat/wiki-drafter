@@ -1,0 +1,26 @@
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+respect-gitignore = true
+
+# Enable a selection of lint rule families.
+select = [
+  "E",  # pycodestyle errors
+  "F",  # pyflakes
+  "I",  # isort
+  "B",  # flake8-bugbear
+  "UP", # pyupgrade
+  "C90" # mccabe complexity
+]
+
+ignore = [
+  # Add any rule codes to ignore here
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.ruff.lint.isort]
+known-first-party = ["routers", "parsers"]

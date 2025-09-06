@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+# Pre-push gate: run full linting, type checks, and tests across subprojects
+set -euo pipefail
+
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+YELLOW="\033[1;33m"
+RESET="\033[0m"
+
+fail() {
+  echo -e "${RED}pre-push: $1${RESET}"
+  exit 1
+}
+
+info() {
+  echo -e "${YELLOW}$1${RESET}"
+}
+
+ok() {
+  echo -e "${GREEN}$1${RESET}"
+}
+
+PROJECT_ROOT_DIR="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+cd "$PROJECT_ROOT_DIR"
+
+# 1) Node/TypeScript (extensions/vscode)
+if [ -f "extensions/vscode/package.json" ]; then
+  info "Running Node/TS checks (lint, format check, typecheck, tests) ..."
+  (
+    cd extensions/vscode
+    if command -v npm >/dev/null 2>&1; then
+      npm run lint:ci --silent
+      npm run format:check --silent
+      npm run typecheck --silent
+      npm test --silent
+    else
+      if command -v npx >/dev/null 2>&1; then
+        npx --yes eslint "src/**/*.{ts,tsx}" --max-warnings=0
+        npx --yes prettier --check .
+        npx --yes tsc -p ./ --noEmit
+        npx --yes jest
+      else
+        fail "Neither npm nor npx found to run Node checks in extensions/vscode"
+      fi
+    fi
+  )
+  ok "Node/TS checks passed."
+else
+  info "extensions/vscode/package.json not found; skipping Node checks."
+fi
+
+# 2) Python (services/local)
+if [ -d "services/local" ]; then
+  info "Running Python checks (ruff, mypy, pytest) ..."
+  (
+    cd services/local
+    # Determine Python
+    PYTHON_BIN=""
+    if [ -x "venv/bin/python" ]; then
+      PYTHON_BIN="venv/bin/python"
+    elif command -v python3 >/dev/null 2>&1; then
+      PYTHON_BIN="$(command -v python3)"
+    elif command -v python >/dev/null 2>&1; then
+      PYTHON_BIN="$(command -v python)"
+    else
+      fail "Python not found to run checks in services/local"
+    fi
+
+    # Ruff
+    if "$PYTHON_BIN" -c "import ruff" >/dev/null 2>&1; then
+      "$PYTHON_BIN" -m ruff check .
+    elif command -v ruff >/dev/null 2>&1; then
+      ruff check .
+    else
+      info "Ruff not installed; skipping Python lint (install with requirements-dev.txt)."
+    fi
+
+    # mypy
+    if "$PYTHON_BIN" -c "import mypy" >/dev/null 2>&1; then
+      "$PYTHON_BIN" -m mypy --config-file mypy.ini .
+    elif command -v mypy >/dev/null 2>&1; then
+      mypy --config-file mypy.ini .
+    else
+      info "mypy not installed; skipping Python type-check (install with requirements-dev.txt)."
+    fi
+
+    # pytest
+    "$PYTHON_BIN" -m pytest -q
+  )
+  ok "Python checks passed."
+else
+  info "services/local/ not found; skipping Python checks."
+fi
+
+ok "All checks passed. Proceeding with push."
