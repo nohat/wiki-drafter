@@ -7,7 +7,10 @@ module.exports = {
     '**/?(*.)+(spec|test).ts'
   ],
   transform: {
-    '^.+\\.ts$': 'ts-jest'
+    '^.+\\.(ts|tsx)$': 'ts-jest'
+  },
+  moduleNameMapper: {
+    '^vscode$': '<rootDir>/tests/__mocks__/vscode.js'
   },
   collectCoverageFrom: [
     'src/**/*.ts',

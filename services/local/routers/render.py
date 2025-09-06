@@ -2,14 +2,15 @@
 Parsoid rendering router for Wiki-Drafter companion service.
 """
 
-from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel
-from typing import Dict, List, Optional, Any
-import httpx
 import json
 import logging
 import re
-from urllib.parse import quote
+from types import SimpleNamespace
+from typing import Any, Dict, Optional
+
+import httpx
+from fastapi import APIRouter, Request
+from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -23,7 +24,7 @@ class RenderResponse(BaseModel):
     html: str
     dsr_map: Optional[Dict[str, Any]] = None
 
-@router.post("/", response_model=RenderResponse)
+@router.post("/render", response_model=RenderResponse)
 async def render_wikitext(request: RenderRequest, req: Request):
     """
     Render wikitext to HTML using Parsoid, with optional section-scoped rendering.
@@ -31,7 +32,8 @@ async def render_wikitext(request: RenderRequest, req: Request):
     Returns HTML and DSR (DOM spec ranges) mapping for cross-highlighting between
     wikitext source and rendered output.
     """
-    config = req.app.state.config
+    # Use app-level config when available; otherwise use sensible defaults for tests
+    config = getattr(req.app.state, 'config', SimpleNamespace(parsoid_endpoint='http://localhost:8142'))
     
     try:
         wikitext = request.wikitext
@@ -126,7 +128,6 @@ def extract_dsr_mapping(html: str) -> Dict[str, Any]:
     dsr_map = {}
     
     # Look for data-mw and data-parsoid attributes
-    import re
     from bs4 import BeautifulSoup
     
     try:
@@ -139,10 +140,14 @@ def extract_dsr_mapping(html: str) -> Dict[str, Any]:
                 if 'dsr' in parsoid_data:
                     element_id = f"elem_{len(dsr_map)}"
                     element['data-dsr-id'] = element_id
+                    text_content = element.get_text()
+                    truncated = text_content[:100]
+                    if len(text_content) > 100:
+                        truncated += '...'
                     dsr_map[element_id] = {
                         'dsr': parsoid_data['dsr'],
                         'tag': element.name,
-                        'text': element.get_text()[:100] + ('...' if len(element.get_text()) > 100 else '')
+                        'text': truncated,
                     }
             except (json.JSONDecodeError, KeyError):
                 continue
@@ -175,25 +180,44 @@ def basic_wikitext_to_html(wikitext: str) -> str:
     html = re.sub(r"''(.*?)''", r'<em>\1</em>', html, flags=re.DOTALL)
     
     # Headers
-    html = re.sub(r'^(={2,6})\s*(.+?)\s*\1\s*$', lambda m: f'<h{len(m.group(1))}>{m.group(2)}</h{len(m.group(1))}>', html, flags=re.MULTILINE)
+    header_pattern = r'^(={2,6})\s*(.+?)\s*\1\s*$'
+    def _header_repl(m: re.Match[str]) -> str:
+        level = len(m.group(1))
+        title = m.group(2)
+        return f'<h{level}>{title}</h{level}>'
+    html = re.sub(header_pattern, _header_repl, html, flags=re.MULTILINE)
     
     # Internal links
-    html = re.sub(r'\[\[([^\]|]+)(\|([^\]]+))?\]\]', r'<a href="#" class="wikilink">\3</a>' if r'\3' else r'<a href="#" class="wikilink">\1</a>', html)
+    link_pattern = r'\[\[([^\]|]+)(\|([^\]]+))?\]\]'
+    def _link_repl(m: re.Match[str]) -> str:
+        target = m.group(1)
+        display = m.group(3) if m.group(3) else target
+        return f'<a href="#" class="wikilink">{display}</a>'
+    html = re.sub(link_pattern, _link_repl, html)
     
     # External links
     html = re.sub(r'\[([^\s]+)\s+([^\]]+)\]', r'<a href="\1" class="external">\2</a>', html)
     
     # References
-    html = re.sub(r'<ref[^>]*name\s*=\s*["\']([^"\']+)["\'][^>]*/?>', r'<sup class="reference"><a href="#ref_\1">[\1]</a></sup>', html)
-    html = re.sub(r'<ref[^>]*>([^<]+)</ref>', r'<sup class="reference"><a href="#ref_inline">[ref]</a></sup>', html)
+    named_ref_pattern = r'<ref[^>]*name\s*=\s*["\']([^"\']+)["\'][^>]*/?>'
+    named_ref_repl = r'<sup class="reference"><a href="#ref_\1">[\1]</a></sup>'
+    html = re.sub(named_ref_pattern, named_ref_repl, html)
+    inline_ref_pattern = r'<ref[^>]*>([^<]+)</ref>'
+    inline_ref_repl = r'<sup class="reference"><a href="#ref_inline">[ref]</a></sup>'
+    html = re.sub(inline_ref_pattern, inline_ref_repl, html)
     
     # Paragraphs
     paragraphs = html.split('\n\n')
-    html = '\n'.join(f'<p>{p.strip()}</p>' if p.strip() and not p.strip().startswith('<h') else p for p in paragraphs)
+    html = '\n'.join(
+        (
+            f'<p>{p.strip()}</p>' if p.strip() and not p.strip().startswith('<h') else p
+        )
+        for p in paragraphs
+    )
     
     return f'<div class="wiki-content">{html}</div>'
 
-@router.get("/test")
+@router.get("/render/test")
 async def test_render():
     """Test endpoint to verify Parsoid connectivity."""
     return {"status": "render service available"}

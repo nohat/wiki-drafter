@@ -6,17 +6,17 @@ This service provides backend functionality for the Wiki-Drafter VS Code extensi
 including Parsoid rendering, citation normalization, archiving, and source quality scoring.
 """
 
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import Dict, List, Optional, Any
-import httpx
 import json
 import logging
 import os
 from pathlib import Path
+from typing import Any
 
-from routers import render, citoid, archive, copyvio, score
+import httpx
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from routers import archive, citoid, copyvio, render, score
 
 # Configure logging
 logging.basicConfig(
@@ -42,7 +42,8 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(render.router, prefix="/render", tags=["rendering"])
+# The render router already exposes '/render' paths
+app.include_router(render.router, tags=["rendering"])
 app.include_router(citoid.router, prefix="/citoid", tags=["citations"])
 app.include_router(archive.router, prefix="/archive", tags=["archiving"])
 app.include_router(copyvio.router, prefix="/copyvio", tags=["copyvio"])
@@ -64,7 +65,7 @@ class Config:
     def _load_json_file(self, file_path: Path, default: Any) -> Any:
         try:
             if file_path.exists():
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, encoding='utf-8') as f:
                     return json.load(f)
         except Exception as e:
             logger.warning(f"Failed to load {file_path}: {e}")
@@ -102,6 +103,11 @@ async def root():
             "score": "/score"
         }
     }
+
+@app.options("/")
+async def root_options():
+    """CORS preflight for root; ensures OPTIONS / returns 200 in tests."""
+    return {"ok": True}
 
 @app.get("/health")
 async def health_check():
