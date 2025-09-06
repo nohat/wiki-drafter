@@ -36,7 +36,15 @@ module.exports = {
     '@typescript-eslint/restrict-template-expressions': 'off',
   },
   settings: {},
-  overrides: [],
+  overrides: [
+    {
+      files: ['tests/**/*.ts', 'tests/**/*.tsx'],
+      rules: {
+        'jsdoc/require-returns': 'off',
+        'prefer-arrow/prefer-arrow-functions': 'off',
+      },
+    },
+  ],
   globals: {
     jest: 'readonly',
   },

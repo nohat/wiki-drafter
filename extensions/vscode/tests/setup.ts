@@ -22,6 +22,15 @@ const vscode = {
     })),
     onDidChangeTextDocument: jest.fn(),
   },
+  languages: {
+    createDiagnosticCollection: jest.fn(() => ({
+      set: jest.fn(),
+      clear: jest.fn(),
+      delete: jest.fn(),
+      dispose: jest.fn(),
+      name: "wiki-drafter",
+    })),
+  },
   Uri: {
     file: jest.fn(),
     joinPath: jest.fn(),
