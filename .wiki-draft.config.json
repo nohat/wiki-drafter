@@ -1,0 +1,27 @@
+{
+  "cite_style": "named-refs",
+  "as_of_year_threshold": 3,
+  "llm": {
+    "provider": "ollama",
+    "model": "llama3.1:70b",
+    "temperature": 0.1
+  },
+  "wikimedia_auth": {
+    "method": "botpassword",
+    "username": "",
+    "password": ""
+  },
+  "parsoid": {
+    "endpoint": "http://localhost:8142"
+  },
+  "citoid": {
+    "endpoint": "http://localhost:1970"
+  },
+  "policy": {
+    "inline_for": ["BLP", "quote", "statistic", "contentious"]
+  },
+  "thresholds": {
+    "source_quality_high_risk_min": 70,
+    "copyvio_max_similarity": 0.35
+  }
+}

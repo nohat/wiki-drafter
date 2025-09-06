@@ -1,0 +1,30 @@
+{{Infobox person
+| name = Carolina del Príncipe
+| birth_date = {{birth date|1985|03|15}}
+| birth_place = [[Medellín]], [[Colombia]]
+| occupation = Environmental scientist, activist
+| education = [[University of Antioquia]] (BS), [[Stanford University]] (PhD)
+}}
+
+'''Carolina del Príncipe''' (born March 15, 1985) is a Colombian environmental scientist and climate change activist known for her research on tropical deforestation and community-based conservation programs.<ref name="stanford2018">{{cite web|url=https://earth.stanford.edu/news/tropical-forests-climate-change-new-research|title=Tropical Forests and Climate Change: New Research|publisher=Stanford Earth|date=2018-11-22|access-date=2025-09-06}}</ref>
+
+== Early life and education ==
+
+Del Príncipe was born in Medellín, Colombia, in 1985. She completed her undergraduate studies in Environmental Science at the University of Antioquia in 2007, graduating ''magna cum laude''.<ref name="udeantioquia2007">{{cite journal|last=Martínez|first=José|title=Outstanding Graduates 2007|journal=University of Antioquia Review|date=2007-12-01|volume=45|issue=3|pages=23-28}}</ref> 
+
+In 2012, she earned a PhD in Environmental Earth System Science from Stanford University, where her dissertation focused on the role of indigenous communities in forest conservation.<ref name="stanford_phd">{{cite thesis|last=del Príncipe|first=Carolina|title=Indigenous Knowledge Systems and Forest Conservation in the Amazon Basin|publisher=Stanford University|year=2012|degree=PhD|url=https://purl.stanford.edu/dissertations/delprincipe2012}}</ref>
+
+== Career and research ==
+
+Since 2013, del Príncipe has worked as a senior researcher at the International Center for Tropical Agriculture (CIAT) in Cali, Colombia. Her research focuses on sustainable agriculture practices and their impact on biodiversity conservation. As of 2024, she has published over 40 peer-reviewed papers in leading environmental journals.
+
+Del Príncipe's work has been particularly influential in developing community-based forest management programs. Her 2019 study in the Amazon basin demonstrated that indigenous-managed forests have 23% lower deforestation rates compared to government-protected areas.<ref name="nature2019">{{cite journal|last=del Príncipe|first=Carolina|last2=Johnson|first2=Mark|last3=Silva|first3=Ana|title=Indigenous Forest Management Reduces Deforestation Rates|journal=Nature|date=2019-08-15|volume=572|pages=334-338|doi=10.1038/s41586-019-1456-7}}</ref>
+
+== Awards and recognition ==
+
+In 2020, del Príncipe received the Goldman Environmental Prize for her work with indigenous communities in the Colombian Amazon.<ref name="goldman2020">{{cite web|url=https://www.goldmanprize.org/recipient/carolina-del-principe/|title=Carolina del Príncipe - 2020 Goldman Environmental Prize Winner|publisher=Goldman Environmental Foundation|access-date=2025-09-06}}</ref> The prize recognized her efforts in establishing over 50,000 hectares of community-managed forest reserves.
+
+She was also named one of ''Time'' magazine's "100 Most Influential People" in 2021, with the citation noting her "groundbreaking approach to conservation that centers indigenous knowledge."<ref name="time2021">{{cite magazine|title=The 100 Most Influential People of 2021|magazine=Time|date=2021-09-15|url=https://time.com/collection/100-most-influential-people-2021/}}</ref>
+
+== References ==
+{{reflist}}

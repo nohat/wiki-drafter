@@ -1,0 +1,197 @@
+{
+  "name": "wiki-drafter",
+  "displayName": "Wiki-Drafter",
+  "description": "AI-first Wikipedia drafting with policy-aware automation",
+  "version": "0.1.0",
+  "publisher": "wiki-drafter",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:wikitext"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "wikitext",
+        "aliases": ["Wikitext", "wikitext"],
+        "extensions": [".wiki", ".wikitext"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "wiki-drafter.insertCitation",
+        "title": "Insert Citation",
+        "category": "Wiki-Drafter"
+      },
+      {
+        "command": "wiki-drafter.acceptAllAutos",
+        "title": "Accept All Low-Risk Autos",
+        "category": "Wiki-Drafter"
+      },
+      {
+        "command": "wiki-drafter.filterUnsupported",
+        "title": "Filter Unsupported Claims",
+        "category": "Wiki-Drafter"
+      },
+      {
+        "command": "wiki-drafter.archivePendingLinks",
+        "title": "Archive Pending Links",
+        "category": "Wiki-Drafter"
+      },
+      {
+        "command": "wiki-drafter.toggleQuote",
+        "title": "Toggle Quote/Blockquote",
+        "category": "Wiki-Drafter"
+      },
+      {
+        "command": "wiki-drafter.fixAsOf",
+        "title": "Fix 'As of' Phrasing",
+        "category": "Wiki-Drafter"
+      },
+      {
+        "command": "wiki-drafter.blpFocus",
+        "title": "BLP Focus Mode",
+        "category": "Wiki-Drafter"
+      },
+      {
+        "command": "wiki-drafter.publishToSandbox",
+        "title": "Publish to Sandbox",
+        "category": "Wiki-Drafter"
+      },
+      {
+        "command": "wiki-drafter.exportPatch",
+        "title": "Export Patch",
+        "category": "Wiki-Drafter"
+      },
+      {
+        "command": "wiki-drafter.openPreview",
+        "title": "Open Preview",
+        "category": "Wiki-Drafter"
+      },
+      {
+        "command": "wiki-drafter.openClaimsGrid",
+        "title": "Open Claims Grid",
+        "category": "Wiki-Drafter"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "wiki-drafter.insertCitation",
+        "key": ";",
+        "when": "editorTextFocus && editorLangId == wikitext"
+      },
+      {
+        "command": "wiki-drafter.acceptAllAutos",
+        "key": "cmd+.",
+        "mac": "cmd+.",
+        "win": "ctrl+.",
+        "when": "editorTextFocus && editorLangId == wikitext"
+      },
+      {
+        "command": "wiki-drafter.filterUnsupported",
+        "key": "cmd+u",
+        "mac": "cmd+u",
+        "win": "ctrl+u",
+        "when": "editorTextFocus && editorLangId == wikitext"
+      },
+      {
+        "command": "wiki-drafter.archivePendingLinks",
+        "key": "a",
+        "when": "editorTextFocus && editorLangId == wikitext"
+      },
+      {
+        "command": "wiki-drafter.toggleQuote",
+        "key": "q",
+        "when": "editorTextFocus && editorLangId == wikitext"
+      },
+      {
+        "command": "wiki-drafter.fixAsOf",
+        "key": "f",
+        "when": "editorTextFocus && editorLangId == wikitext"
+      },
+      {
+        "command": "wiki-drafter.blpFocus",
+        "key": "shift+b",
+        "when": "editorTextFocus && editorLangId == wikitext"
+      },
+      {
+        "command": "wiki-drafter.publishToSandbox",
+        "key": "cmd+enter",
+        "mac": "cmd+enter",
+        "win": "ctrl+enter",
+        "when": "editorTextFocus && editorLangId == wikitext"
+      },
+      {
+        "command": "wiki-drafter.exportPatch",
+        "key": "alt+cmd+enter",
+        "mac": "alt+cmd+enter",
+        "win": "alt+ctrl+enter",
+        "when": "editorTextFocus && editorLangId == wikitext"
+      }
+    ],
+    "views": {
+      "wiki-drafter": [
+        {
+          "id": "wiki-drafter.claimsGrid",
+          "name": "Claims Grid",
+          "type": "webview",
+          "when": "resourceExtname == .wiki || resourceExtname == .wikitext"
+        },
+        {
+          "id": "wiki-drafter.preview",
+          "name": "Wiki Preview", 
+          "type": "webview",
+          "when": "resourceExtname == .wiki || resourceExtname == .wikitext"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "wiki-drafter",
+          "title": "Wiki-Drafter",
+          "icon": "$(book)"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Wiki-Drafter",
+      "properties": {
+        "wiki-drafter.companionService.endpoint": {
+          "type": "string",
+          "default": "http://localhost:8000",
+          "description": "Companion service endpoint"
+        },
+        "wiki-drafter.parsoid.endpoint": {
+          "type": "string",
+          "default": "http://localhost:8142",
+          "description": "Parsoid endpoint"
+        },
+        "wiki-drafter.citoid.endpoint": {
+          "type": "string",
+          "default": "http://localhost:1970",
+          "description": "Citoid endpoint"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}
